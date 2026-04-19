@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-  // Относительные пути позволяют запускать собранный проект в любой подпапке (включая GitHub Pages repo-папки)
-  base: './',
+  // Указываем точное название репозитория, чтобы GitHub Pages правильно находил CSS и JS файлы
+  base: '/car_parking/',
 });
