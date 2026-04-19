@@ -1,0 +1,359 @@
+:root {
+  --bg-color: #0f172a;
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --accent-color: #3b82f6;
+  --accent-hover: #2563eb;
+  --success-color: #10b981;
+  --danger-color: #ef4444;
+  --panel-bg: rgba(30, 41, 59, 0.85);
+  --panel-border: rgba(255, 255, 255, 0.1);
+  --pedal-bg: rgba(255, 255, 255, 0.1);
+  --pedal-active: rgba(255, 255, 255, 0.3);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html {
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  font-family: 'Inter', sans-serif;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  user-select: none;
+}
+
+#app {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* UI Layer */
+#ui-layer {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; /* Let clicks pass to canvas if not on a UI element */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* HUD Top Bar */
+#top-bar {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  pointer-events: auto;
+}
+
+.hud-item {
+  background: var(--panel-bg);
+  backdrop-filter: blur(10px);
+  padding: 10px 20px;
+  border-radius: 12px;
+  font-weight: 600;
+  border: 1px solid var(--panel-border);
+  box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+
+#instructions {
+  flex-grow: 1;
+  text-align: center;
+  margin: 0 20px;
+  color: var(--accent-color);
+}
+
+/* Overlays (Menus) */
+.overlay {
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  z-index: 100;
+}
+
+.overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.menu-card {
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  padding: 40px;
+  border-radius: 24px;
+  min-width: 400px;
+  box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
+  text-align: center;
+}
+
+.menu-card h1 {
+  margin-bottom: 24px;
+  font-size: 28px;
+  font-weight: 800;
+  background: linear-gradient(to right, #3b82f6, #8b5cf6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.menu-section {
+  margin-bottom: 24px;
+  text-align: left;
+}
+
+.menu-section h3 {
+  font-size: 14px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.car-selector, .level-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button {
+  cursor: pointer;
+  font-family: inherit;
+  outline: none;
+  border: none;
+}
+
+.car-btn, .level-btn {
+  padding: 12px 16px;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text-primary);
+  border-radius: 8px;
+  text-align: left;
+  transition: all 0.2s;
+  font-weight: 600;
+}
+
+.car-btn:hover, .level-btn:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.car-btn.active, .level-btn.active {
+  background: rgba(59, 130, 246, 0.1);
+  border-color: var(--accent-color);
+  color: var(--accent-color);
+}
+
+.primary-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 10px;
+  background: var(--accent-color);
+  color: white;
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.1s;
+}
+
+.primary-btn:hover { background: var(--accent-hover); }
+.primary-btn:active { transform: scale(0.98); }
+
+.secondary-btn {
+  width: 100%;
+  padding: 16px;
+  margin-top: 10px;
+  background: transparent;
+  border: 1px solid var(--panel-border);
+  color: var(--text-primary);
+  border-radius: 12px;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.secondary-btn:hover { background: rgba(255, 255, 255, 0.05); }
+
+/* Mobile Controls */
+#mobile-controls {
+  padding: 20px;
+  pointer-events: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 250px;
+}
+
+.controls-left, .controls-right {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.controls-right {
+  align-items: flex-end;
+}
+
+.turn-signals-mobile {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.turn-btn {
+  width: 50px;
+  height: 40px;
+  background: var(--panel-bg);
+  border: 1px solid var(--panel-border);
+  color: var(--text-secondary);
+  border-radius: 8px;
+  font-size: 20px;
+  transition: all 0.2s;
+}
+
+.turn-btn.active {
+  background: #f59e0b;
+  color: #fff;
+  border-color: #f59e0b;
+  box-shadow: 0 0 10px #f59e0b;
+}
+
+.steer-wheel-container {
+  width: 160px;
+  height: 160px;
+  background: rgba(0,0,0,0.3);
+  border-radius: 50%;
+  border: 4px solid var(--panel-border);
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#steer-wheel {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 10px solid var(--text-secondary);
+  position: relative;
+  transition: transform 0.1s;
+}
+
+#steer-wheel::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 50%;
+  width: 8px; height: 30px;
+  background: var(--accent-color);
+  transform: translateX(-50%);
+  border-radius: 4px;
+}
+
+.gear-shifter {
+  display: flex;
+  background: var(--panel-bg);
+  border-radius: 12px;
+  padding: 5px;
+  gap: 5px;
+  border: 1px solid var(--panel-border);
+}
+
+.gear-btn {
+  width: 40px; height: 40px;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text-primary);
+  font-weight: bold;
+}
+
+.gear-btn.active {
+  background: var(--accent-color);
+  color: white;
+}
+
+.pedals {
+  display: flex;
+  gap: 15px;
+}
+
+.pedal {
+  width: 60px;
+  height: 100px;
+  background: var(--pedal-bg);
+  border: 2px solid var(--panel-border);
+  border-radius: 8px 8px 16px 16px;
+  color: var(--text-secondary);
+  font-weight: bold;
+  font-size: 12px;
+  transition: all 0.1s;
+  box-shadow: 0 10px 10px rgba(0,0,0,0.2);
+}
+
+.pedal:active, .pedal.active {
+  background: var(--pedal-active);
+  transform: translateY(5px);
+  box-shadow: 0 5px 5px rgba(0,0,0,0.2);
+}
+
+.pedal.gas {
+  height: 120px;
+  width: 50px;
+}
+
+/* Адаптация стартового меню для телефонов в горизонтальном положении */
+@media (max-height: 500px) and (orientation: landscape) {
+  .menu-card {
+    padding: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px;
+    height: 95vh;
+    overflow-y: auto;
+    align-items: flex-start;
+    text-align: left;
+  }
+  .menu-card h1 {
+    width: 100%;
+    font-size: 20px;
+    margin-bottom: 5px;
+    text-align: center;
+  }
+  .menu-section {
+    flex: 1 1 200px;
+    margin-bottom: 0;
+  }
+  .checkbox-wrapper {
+    width: 100%;
+    flex: 1 1 100%;
+  }
+  .primary-btn {
+    padding: 12px;
+    margin-top: 5px;
+    width: 100%;
+    flex: 1 1 100%;
+  }
+}
+
+
