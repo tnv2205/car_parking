@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Симулятор Парковки</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+    <script type="module" crossorigin src="./assets/index-DquHJcsL.js"></script>
+    <link rel="stylesheet" crossorigin href="./assets/index-Byy49c2Y.css">
+  </head>
+  <body>
+    <div id="app">
+      <!-- Игровой холст -->
+      <canvas id="gameCanvas"></canvas>
+      
+      <!-- UI Оверлей -->
+      <div id="ui-layer">
+        
+        <!-- Верхняя панель: Статус и Подсказки -->
+        <header id="top-bar">
+          <div class="hud-item" id="info-mode">Режим: Обучение</div>
+          <div class="hud-item" id="current-gear">Передача: N</div>
+          <div class="hud-item" id="instructions">Выберите автомобиль, чтобы начать</div>
+          <div class="hud-item" id="speed-meter">0 км/ч</div>
+          <div style="display: flex; gap: 10px; pointer-events: auto;">
+            <button id="hud-restart-btn" class="hud-item hud-action" style="cursor: pointer;">Заново</button>
+            <button id="hud-menu-btn" class="hud-item hud-action" style="cursor: pointer;">Меню</button>
+          </div>
+        </header>
+
+        <!-- Меню выбора авто и уровня -->
+        <div id="menu-overlay" class="overlay active">
+          <div class="menu-card">
+            <h1>Мастер Парковки</h1>
+            
+            <div class="menu-section">
+              <h3>Выберите автомобиль</h3>
+              <div class="car-selector" id="car-selector">
+                <button class="car-btn active" data-car="vesta">Lada Vesta (Седан)</button>
+                <button class="car-btn" data-car="tiggo">Chery Tiggo 4 Pro (Кроссовер)</button>
+                <button class="car-btn" data-car="sienna">Toyota Sienna (Минивэн)</button>
+                <button class="car-btn" data-car="truck">Грузовик (Длинномер)</button>
+              </div>
+            </div>
+
+            <div class="menu-section">
+              <h3>Сценарий</h3>
+              <div class="level-selector" id="level-selector">
+                <button class="level-btn active" data-level="parallel">Параллельная</button>
+                <button class="level-btn" data-level="box">В бокс (90°)</button>
+                <button class="level-btn" data-level="angled">Елочка (Наклонная)</button>
+              </div>
+              <div class="checkbox-wrapper" style="margin-top: 15px; text-align: left;">
+                <label style="cursor: pointer; font-size: 0.9em; color: #cbd5e1; display: block; margin-bottom: 10px;">
+                  <input type="checkbox" id="use-trucks-checkbox" /> Парковаться между грузовиками
+                </label>
+                <div style="font-size: 0.9em; color: #cbd5e1; display: flex; align-items: center;">
+                  Встречная полоса:
+                  <select id="lanes-count-select" style="margin-left: 10px; padding: 4px; border-radius: 4px; background: rgba(0,0,0,0.5); color: white; border: 1px solid #475569; outline: none; cursor: pointer;">
+                    <option value="1">Нет (узкая дорога)</option>
+                    <option value="2" selected>Есть (2 полосы)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <button id="start-btn" class="primary-btn">Начать симуляцию</button>
+          </div>
+        </div>
+
+        <!-- Экран успеха/поражения -->
+        <div id="result-overlay" class="overlay">
+          <div class="menu-card">
+            <h1 id="result-title">Парковка успешна!</h1>
+            <p id="result-desc">Идеально ровно и безопасно.</p>
+            <button id="restart-btn" class="primary-btn">Попробовать снова</button>
+            <button id="menu-btn" class="secondary-btn">В меню</button>
+          </div>
+        </div>
+
+        <!-- Окно управления мышью -->
+        <div id="mobile-controls">
+          <div class="controls-left">
+            <div class="turn-signals-mobile" id="mobile-turn-signals">
+              <button class="turn-btn" data-dir="left">◀</button>
+              <button class="turn-btn" data-dir="right">▶</button>
+            </div>
+            <div class="steer-wheel-container">
+              <div id="steer-wheel"></div>
+            </div>
+          </div>
+          <div class="controls-right">
+            <div class="gear-shifter">
+              <button class="gear-btn" data-gear="R">R</button>
+              <button class="gear-btn active" data-gear="N">N</button>
+              <button class="gear-btn" data-gear="1">1</button>
+              <button class="gear-btn" data-gear="2">2</button>
+            </div>
+            <div class="pedals">
+              <button id="pedal-brake" class="pedal">Тормоз</button>
+              <button id="pedal-gas" class="pedal gas">Газ</button>
+            </div>
+          </div>
+        </div>
+        
+      </div>
+    </div>
+  </body>
+</html>
