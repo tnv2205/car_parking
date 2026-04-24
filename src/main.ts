@@ -91,6 +91,18 @@ document.addEventListener('DOMContentLoaded', () => {
         uiElements.resultOverlay.classList.add('active');
         if (gameLoop) gameLoop.stop();
       };
+
+      let signalToastTimeout: ReturnType<typeof setTimeout>;
+      gameLoop.onSignalWarning = () => {
+        const toast = document.getElementById('turn-signal-warning');
+        if (toast) {
+          toast.classList.add('show');
+          clearTimeout(signalToastTimeout);
+          signalToastTimeout = setTimeout(() => {
+            toast.classList.remove('show');
+          }, 3000);
+        }
+      };
     }
 
     // Запуск игры с выбранными параметрами

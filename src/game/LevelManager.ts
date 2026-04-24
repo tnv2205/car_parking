@@ -94,26 +94,26 @@ export class LevelManager {
 
     const lines: { points: Point[]; isDashed: boolean }[] = [
       // Обочина (правая)
-      { points: [{ x: -500, y: yRightEdge }, { x: 800, y: yRightEdge }], isDashed: false }
+      { points: [{ x: -5000, y: yRightEdge }, { x: 5000, y: yRightEdge }], isDashed: false }
     ];
     for(let i = 1; i < lanesCount; i++) {
-       lines.push({ points: [{ x: -500, y: yRightEdge - i * 140 }, { x: 800, y: yRightEdge - i * 140 }], isDashed: true });
+       lines.push({ points: [{ x: -5000, y: yRightEdge - i * 140 }, { x: 5000, y: yRightEdge - i * 140 }], isDashed: true });
     }
     // Линия встречной обочины
-    lines.push({ points: [{ x: -500, y: yLeftEdge }, { x: 800, y: yLeftEdge }], isDashed: false });
+    lines.push({ points: [{ x: -5000, y: yLeftEdge }, { x: 5000, y: yLeftEdge }], isDashed: false });
 
     return {
       startPos: { x: centerX - gapLength - 200, y: yRightEdge - 70, heading: 0 }, 
-      targetZone: this.createTargetZone(centerX, 40, 0, 80, pm.length * 1.5 - 10),
+      targetZone: this.createTargetZone(centerX, 40, 0, 88, pm.length * 1.5 - 10),
       obstacles: [
         // Припаркованная машина СВЕРХУ по ходу движения
         this.createVehicleObstacle(topObsX, 40, 0, model),
         // Припаркованная машина СНИЗУ по ходу движения
         this.createVehicleObstacle(botObsX, 40, 0, model),
         // Бордюр (правый)
-        { points: [{ x: -500, y: 90 }, { x: 800, y: 90 }, { x: 800, y: 200 }, { x: -500, y: 200 }] },
+        { points: [{ x: -5000, y: 90 }, { x: 5000, y: 90 }, { x: 5000, y: 5000 }, { x: -5000, y: 5000 }] },
         // Стена встречной полосы
-        { points: [{ x: -500, y: yLeftEdge - 40 }, { x: 800, y: yLeftEdge - 40 }, { x: 800, y: yLeftEdge }, { x: -500, y: yLeftEdge }] }
+        { points: [{ x: -5000, y: -5000 }, { x: 5000, y: -5000 }, { x: 5000, y: yLeftEdge }, { x: -5000, y: yLeftEdge }] }
       ],
       lines: lines,
       trainingHints: [
@@ -130,8 +130,8 @@ export class LevelManager {
     const m = CAR_MODELS[model];
     const pm = CAR_MODELS[playerModel];
     
-    // Ширина парковочного места (зазор должен вмещать ширину машины игрока с запасом)
-    const gapWidth = Math.max(m.width, pm.width) + 45; 
+    // Ширина парковочного места (зазор увеличен на 10%)
+    const gapWidth = (Math.max(m.width, pm.width) + 45) * 1.1; 
     const distanceBetweenCenters = gapWidth + m.width;
     
     const leftObsX = -distanceBetweenCenters / 2;
@@ -153,12 +153,12 @@ export class LevelManager {
     const yLeftEdge = yRightEdge - lanesCount * 140;
 
     const lines: { points: Point[]; isDashed: boolean }[] = [
-      { points: [{ x: -500, y: yRightEdge }, { x: 500, y: yRightEdge }], isDashed: false }
+      { points: [{ x: -5000, y: yRightEdge }, { x: 5000, y: yRightEdge }], isDashed: false }
     ];
     for(let i = 1; i < lanesCount; i++) {
-       lines.push({ points: [{ x: -500, y: yRightEdge - i * 140 }, { x: 500, y: yRightEdge - i * 140 }], isDashed: true });
+       lines.push({ points: [{ x: -5000, y: yRightEdge - i * 140 }, { x: 5000, y: yRightEdge - i * 140 }], isDashed: true });
     }
-    lines.push({ points: [{ x: -500, y: yLeftEdge }, { x: 500, y: yLeftEdge }], isDashed: false });
+    lines.push({ points: [{ x: -5000, y: yLeftEdge }, { x: 5000, y: yLeftEdge }], isDashed: false });
 
     return {
       startPos: { x: -300, y: yRightEdge - 70, heading: 0 },
@@ -170,9 +170,9 @@ export class LevelManager {
         // Сосед справа
         this.createVehicleObstacle(rightObsX, obsY, Math.PI / 2, model),
         // Бордюр снизу (стена) будет находиться сразу перед носом машины
-        { points: [{ x: -500, y: wallY }, { x: 500, y: wallY }, { x: 500, y: wallY + 100 }, { x: -500, y: wallY + 100 }] },
+        { points: [{ x: -5000, y: wallY }, { x: 5000, y: wallY }, { x: 5000, y: 5000 }, { x: -5000, y: 5000 }] },
         // Стена встречной полосы
-        { points: [{ x: -500, y: yLeftEdge - 40 }, { x: 500, y: yLeftEdge - 40 }, { x: 500, y: yLeftEdge }, { x: -500, y: yLeftEdge }] }
+        { points: [{ x: -5000, y: -5000 }, { x: 5000, y: -5000 }, { x: 5000, y: yLeftEdge }, { x: -5000, y: yLeftEdge }] }
       ],
       lines: lines,
       trainingHints: [
@@ -202,25 +202,25 @@ export class LevelManager {
     const yLeftEdge = yRightEdge - lanesCount * 140;
 
     const lines: { points: Point[]; isDashed: boolean }[] = [
-      { points: [{ x: -500, y: yRightEdge }, { x: 800, y: yRightEdge }], isDashed: false }
+      { points: [{ x: -5000, y: yRightEdge }, { x: 5000, y: yRightEdge }], isDashed: false }
     ];
     for(let i = 1; i < lanesCount; i++) {
-       lines.push({ points: [{ x: -500, y: yRightEdge - i * 140 }, { x: 800, y: yRightEdge - i * 140 }], isDashed: true });
+       lines.push({ points: [{ x: -5000, y: yRightEdge - i * 140 }, { x: 5000, y: yRightEdge - i * 140 }], isDashed: true });
     }
-    lines.push({ points: [{ x: -500, y: yLeftEdge }, { x: 800, y: yLeftEdge }], isDashed: false });
+    lines.push({ points: [{ x: -5000, y: yLeftEdge }, { x: 5000, y: yLeftEdge }], isDashed: false });
 
     return {
       startPos: { x: -350, y: yRightEdge - 70, heading: 0 },
-      targetZone: this.createTargetZone(centerX, centerY, Math.PI / 4, pm.width + 30, pm.length + 30),
+      targetZone: this.createTargetZone(centerX, centerY, Math.PI / 4, (pm.width + 30) * 1.1, pm.length + 30),
       obstacles: [
         // Препятствие слева от целевого места
         this.createVehicleObstacle(leftX, leftY, Math.PI / 4, model),
         // Препятствие справа от целевого места
         this.createVehicleObstacle(rightX, rightY, Math.PI / 4, model),
         // Бордюр снизу по диагонали (примерный край парковки)
-        { points: [{ x: -500, y: 300 }, { x: 800, y: 300 }, { x: 800, y: 400 }, { x: -500, y: 400 }] },
+        { points: [{ x: -5000, y: 300 }, { x: 5000, y: 300 }, { x: 5000, y: 5000 }, { x: -5000, y: 5000 }] },
         // Стена встречной полосы
-        { points: [{ x: -500, y: yLeftEdge - 40 }, { x: 800, y: yLeftEdge - 40 }, { x: 800, y: yLeftEdge }, { x: -500, y: yLeftEdge }] }
+        { points: [{ x: -5000, y: -5000 }, { x: 5000, y: -5000 }, { x: 5000, y: yLeftEdge }, { x: -5000, y: yLeftEdge }] }
       ],
       lines: lines,
       trainingHints: [

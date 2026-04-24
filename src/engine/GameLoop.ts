@@ -19,6 +19,9 @@ export class GameLoop {
   public onWin?: () => void;
   public onFail?: (reason: string) => void;
   public onUpdateUI?: (speed: number, gear: string) => void;
+  public onSignalWarning?: () => void;
+
+  private hasWarnedAboutSignal: boolean = false;
 
   public setZoom(zoom: number) {
       if (this.renderer) {
@@ -45,6 +48,7 @@ export class GameLoop {
     this.car.reset(this.level.startPos.x, this.level.startPos.y, this.level.startPos.heading);
     this.input.reset();
     this.hasFinished = false;
+    this.hasWarnedAboutSignal = false;
 
     if (!this.isRunning) {
       this.isRunning = true;
@@ -116,6 +120,11 @@ export class GameLoop {
     console.log(`dt: ${dt}, inputGear: ${this.input.gear}, carGear: ${this.car.gear}, carV: ${this.car.velocity}, gas: ${this.input.gas}`);
 
     this.car.update(dt);
+
+    if (!this.hasWarnedAboutSignal && Math.abs(this.car.velocity) > 0.5 && this.car.turnSignal === 'none') {
+      this.hasWarnedAboutSignal = true;
+      if (this.onSignalWarning) this.onSignalWarning();
+    }
 
     const carBoundingBox = this.car.getBoundingBox();
 

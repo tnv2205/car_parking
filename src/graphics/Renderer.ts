@@ -11,7 +11,7 @@ export class Renderer {
 
   // Стилевые константы
   private COLORS = {
-    asphalt: '#1e293b',
+    asphalt: '#64748b',
     lines: '#ffffff',
     carVesta: '#ef4444', 
     carTiggo: '#3b82f6',
@@ -19,7 +19,9 @@ export class Renderer {
     carTruck: '#5eead4',
     obstacle: '#0f172a',
     target: 'rgba(16, 185, 129, 0.4)',
-    glass: '#0ea5e9'
+    glass: '#0ea5e9',
+    grass: '#4ade80',
+    curb: '#ffffff'
   };
 
   constructor(canvas: HTMLCanvasElement) {
@@ -104,15 +106,15 @@ export class Renderer {
     this.ctx.setLineDash([]);
 
     // Препятствия (многоугольники, бордюры и стоящие машины)
-    this.ctx.fillStyle = this.COLORS.obstacle;
-    this.ctx.strokeStyle = '#334155';
-    this.ctx.lineWidth = 2;
     for (const obs of level.obstacles as any[]) {
       if (obs.isVehicle && obs.vehicleModel) {
         // Отрисовка соседней машины с фарами (headlights = true, isObstacle = true)
         const m = CAR_MODELS[obs.vehicleModel as keyof typeof CAR_MODELS];
         this.renderVehicleBase(obs.x, obs.y, obs.heading, m, 0, true, 'none', 0, true);
       } else {
+        this.ctx.fillStyle = this.COLORS.grass;
+        this.ctx.strokeStyle = this.COLORS.curb;
+        this.ctx.lineWidth = 6;
         this.ctx.beginPath();
         this.ctx.moveTo(obs.points[0].x, obs.points[0].y);
         for (let i = 1; i < obs.points.length; i++) {
