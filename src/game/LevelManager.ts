@@ -186,46 +186,74 @@ export class LevelManager {
   // 3. Парковка елочкой 45 градусов (места справа)
   private static createAngledLevel(useTrucks: boolean, playerModel: CarModel, lanesCount: number): LevelData {
     const model = useTrucks ? 'truck' : 'sienna';
-    // Добавляем саму машину
+    const m = CAR_MODELS[model];
     const pm = CAR_MODELS[playerModel];
-    
-    // Центрируем место между двумя препятствиями
-    const leftX = useTrucks ? -145 : -105;
-    const leftY = useTrucks ? 95 : 135;
-    const rightX = useTrucks ? 175 : 135;
-    const rightY = useTrucks ? 275 : 235;
 
-    const centerX = (leftX + rightX) / 2;
-    const centerY = (leftY + rightY) / 2;
+    const angle = Math.PI / 4; // 45 градусов
+    const cos45 = Math.cos(angle); // ≈ 0.707
+    const sin45 = Math.sin(angle); // ≈ 0.707
 
     const yRightEdge = 30;
+    const margin = 8;
+
+    // ── Глубина (Y-координата геом. центра) соседних машин ───────────────────
+    // При угле 45° самый «верхний» угол кузова отстоит от центра на (L/2 + W/2)*sin45.
+    // Ставим центр так, чтобы этот угол был ровно на краю дороги + margin.
+    const neighborHalfDiag = (m.length / 2 + m.width / 2) * sin45;
+    const neighborCY = yRightEdge + neighborHalfDiag + margin;
+
+    // Аналогично для целевой зоны — по размерам машины игрока
+    const playerHalfDiag = (pm.length / 2 + pm.width / 2) * sin45;
+    const targetCY = yRightEdge + playerHalfDiag + margin;
+
+    // ── Шаг между слотами ВДОЛЬ ДОРОГИ (ось X) ───────────────────────────────
+    // Проекция ширины машины на ось дороги при 45°: pitch = W / sin45 = W * √2
+    const slotPitch = m.width * Math.SQRT2 + 10; // +10px зазор
+
+    const centerX = 15;
+    // Соседи сдвинуты только по X; глубина (Y) у всех одинаковая
+    const leftCX  = centerX - slotPitch;
+    const rightCX = centerX + slotPitch;
+
+    // ── Перевод геом. центра в координату задней оси ──────────────────────────
+    // createVehicleObstacle(x,y) ожидает позицию задней оси, не центра.
+    const axisShift = m.length / 2 - m.rearOverhang;
+    const leftX  = leftCX  - axisShift * cos45;
+    const leftY  = neighborCY - axisShift * sin45;
+    const rightX = rightCX - axisShift * cos45;
+    const rightY = neighborCY - axisShift * sin45;
+
+    // ── Стена за парковкой ────────────────────────────────────────────────────
+    const neighborDeepEdge = neighborCY + neighborHalfDiag;
+    const wallY = neighborDeepEdge + 20;
+
     const yLeftEdge = yRightEdge - lanesCount * 140;
 
     const lines: { points: Point[]; isDashed: boolean }[] = [
       { points: [{ x: -5000, y: yRightEdge }, { x: 5000, y: yRightEdge }], isDashed: false }
     ];
-    for(let i = 1; i < lanesCount; i++) {
-       lines.push({ points: [{ x: -5000, y: yRightEdge - i * 140 }, { x: 5000, y: yRightEdge - i * 140 }], isDashed: true });
+    for (let i = 1; i < lanesCount; i++) {
+      lines.push({ points: [{ x: -5000, y: yRightEdge - i * 140 }, { x: 5000, y: yRightEdge - i * 140 }], isDashed: true });
     }
     lines.push({ points: [{ x: -5000, y: yLeftEdge }, { x: 5000, y: yLeftEdge }], isDashed: false });
 
     return {
       startPos: { x: -350, y: yRightEdge - 70, heading: 0 },
-      targetZone: this.createTargetZone(centerX, centerY, Math.PI / 4, (pm.width + 30) * 1.1, pm.length + 30),
+      targetZone: this.createTargetZone(centerX, targetCY, angle, (pm.width + 30) * 1.1, pm.length + 20),
       obstacles: [
-        // Препятствие слева от целевого места
-        this.createVehicleObstacle(leftX, leftY, Math.PI / 4, model),
-        // Препятствие справа от целевого места
-        this.createVehicleObstacle(rightX, rightY, Math.PI / 4, model),
-        // Бордюр снизу по диагонали (примерный край парковки)
-        { points: [{ x: -5000, y: 300 }, { x: 5000, y: 300 }, { x: 5000, y: 5000 }, { x: -5000, y: 5000 }] },
+        // Сосед слева
+        this.createVehicleObstacle(leftX, leftY, angle, model),
+        // Сосед справа
+        this.createVehicleObstacle(rightX, rightY, angle, model),
+        // Бордюр за парковкой
+        { points: [{ x: -5000, y: wallY }, { x: 5000, y: wallY }, { x: 5000, y: 5000 }, { x: -5000, y: 5000 }] },
         // Стена встречной полосы
         { points: [{ x: -5000, y: -5000 }, { x: 5000, y: -5000 }, { x: 5000, y: yLeftEdge }, { x: -5000, y: yLeftEdge }] }
       ],
       lines: lines,
       trainingHints: [
-        { point: { x: 15, y: 115 }, text: "Место" },
-        { point: { x: -150, y: -80 }, text: "Возьмите чуть левее и паркуйтесь передом" }
+        { point: { x: centerX, y: targetCY }, text: "Место" },
+        { point: { x: -200, y: yRightEdge - 70 }, text: "Возьмите чуть левее и паркуйтесь передом" }
       ]
     };
   }

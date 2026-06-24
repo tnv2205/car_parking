@@ -19,13 +19,18 @@
 }
 
 body, html {
-  width: 100vw;
+  width: 100%;
+  /* dvh fallback для iOS < 15.4 */
+  height: 100vh;
   height: 100dvh;
   overflow: hidden;
   font-family: 'Inter', sans-serif;
   background-color: var(--bg-color);
   color: var(--text-primary);
   user-select: none;
+  -webkit-user-select: none;
+  /* Убираем синюю подсветку при тапе на iOS */
+  -webkit-tap-highlight-color: transparent;
 }
 
 #app {
@@ -54,12 +59,16 @@ canvas {
 #top-bar {
   display: flex;
   justify-content: space-between;
-  padding: 20px;
+  /* Отступ от чёлки (notch) на iPhone X+ */
+  padding: max(20px, env(safe-area-inset-top)) 20px 20px;
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   pointer-events: auto;
 }
 
 .hud-item {
   background: var(--panel-bg);
+  -webkit-backdrop-filter: blur(10px); /* iOS Safari */
   backdrop-filter: blur(10px);
   padding: 10px 20px;
   border-radius: 12px;
@@ -81,10 +90,13 @@ canvas {
   position: absolute;
   top: 0; left: 0; right: 0; bottom: 0;
   background: rgba(15, 23, 42, 0.7);
+  -webkit-backdrop-filter: blur(8px); /* iOS Safari */
   backdrop-filter: blur(8px);
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-y: auto; /* Позволяет скроллить меню если контент не влезает */
+  -webkit-overflow-scrolling: touch; /* Плавный инерционный скролл на iOS */
   opacity: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
@@ -105,9 +117,12 @@ canvas {
   border: 1px solid var(--panel-border);
   padding: 40px;
   border-radius: 24px;
-  min-width: 400px;
+  /* min-width убран — на iPhone SE (375px) карточка шириной 400px выходила за экран */
+  width: min(420px, 92vw);
   box-shadow: 0 20px 25px -5px rgba(0,0,0,0.5);
   text-align: center;
+  /* Отступ от Home indicator на iPhone X+ */
+  margin-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .menu-card h1 {
@@ -198,12 +213,18 @@ button {
 
 /* Mobile Controls */
 #mobile-controls {
+  /* Отступы с учётом Safe Area (чёлка/Home indicator на iPhone X+) */
   padding: 20px;
+  padding-bottom: max(20px, env(safe-area-inset-bottom));
+  padding-left: max(20px, env(safe-area-inset-left));
+  padding-right: max(20px, env(safe-area-inset-right));
   pointer-events: auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-end;
   height: 250px;
+  /* Отключаем долгое нажатие (контекстное меню) на кнопках управления */
+  touch-action: manipulation;
 }
 
 .controls-left, .controls-right {

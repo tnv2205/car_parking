@@ -27,8 +27,8 @@ export const CAR_MODELS: Record<CarModel, CarMetrics> = {
     acceleration: 140, braking: 320, maxSpeed: 200
   },
   sienna: {
-    name: 'Toyota Sienna',
-    length: 207, width: 80, wheelbase: 122, rearOverhang: 42,
+    name: 'Toyota Sienna 2011',
+    length: 203, width: 79, wheelbase: 121, rearOverhang: 43,
     maxSteerAngle: Math.PI / 5.5,
     acceleration: 120, braking: 280, maxSpeed: 180
   },

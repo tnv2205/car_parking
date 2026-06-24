@@ -57,9 +57,9 @@ document.addEventListener('DOMContentLoaded', () => {
     uiElements.menuOverlay.classList.remove('active');
     uiElements.resultOverlay.classList.remove('active');
     
-    // Включение полноэкранного режима на телефонах
-    if (!document.fullscreenElement && navigator.userAgent.includes('Mobile')) {
-      document.documentElement.requestFullscreen().catch(e => console.warn(e));
+    // Включение полноэкранного режима (не поддерживается iOS Safari)
+    if (!document.fullscreenElement && document.documentElement.requestFullscreen) {
+      document.documentElement.requestFullscreen().catch(e => console.warn('Fullscreen not supported:', e));
     }
 
     // Скрываем текстовые подсказки
